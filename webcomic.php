@@ -1,19 +1,11 @@
-<?php /** Displays the full-size webcomic on the home and single-post pages. */ global $inkblot;
-
-global $webcomic;
+<?php /** Displays the full-size webcomic on the home and single-post pages. */ 
+global $inkblot,$webcomic,$post,$q;
+//if($q->have_posts())
+//	$q->the_posts();
+ajax_the_id(get_the_ID());
 ?>
-<div class="webcomic full">
-	<div id="webcomic-above" class="widgetized"><?php 
-		dynamic_sidebar( 'inkblot-webcomic-above' ); 
-	?></div>
-	<?php the_webcomic_object( 'full', $inkblot->option( 'single_webcomic_link' ) ); ?>
-	<nav class="below"><?php
-		first_webcomic_link("%link", __("&laquo;", "webcomic")); 
-		previous_webcomic_link("%link", __("&lsaquo;", "webcomic"));
-		the_webcomic_link();
-		next_webcomic_link("%link", __("&rsaquo;", "webcomic")); 
-		last_webcomic_link("%link", __("&raquo;", "webcomic")); 
-	?></nav>
-	<?php pages_view();?>
-	<div id="webcomic-below" class="widgetized"><?php dynamic_sidebar( 'inkblot-webcomic-below' ); ?></div>
-</div>
+<?php?>
+	<section class="webcomic full">
+		<div><?php ?></div>
+		<div><?php print_r(get_webcomic_all_ids());?></div>
+	</section>

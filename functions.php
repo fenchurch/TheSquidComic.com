@@ -110,21 +110,22 @@ class inkblot extends mgs_core {
 	/** Add widgetized areas */
 	function hook_init() {
 		$sidebars = array(
-			'inkblot-sidebar1'          => array( __( 'Sidebar 1', 'inkblot' ), __( 'The first sidebar, used in both two and three-column layouts.', 'inkblot' ) ),
-			'inkblot-sidebar2'          => array( __( 'Sidebar 2', 'inkblot' ), __( 'The second sidebar, used in three-column layouts.', 'inkblot' ) ),
-			'inkblot-page-above'        => array( __( 'Page Above', 'inkblot' ), __( 'Located at the very top of every page, before the header.', 'inkblot' ) ),
-			'inkblot-page-below'        => array( __( 'Page Below', 'inkblot' ), __( 'Located at the very bottom of every page, below the footer.', 'inkblot' ) ),
-			'inkblot-webcomic-above'    => array( __( 'Webcomic Above', 'inkblot' ), __( 'Located above the webcomic on the home page and single-webcomic pages.', 'inkblot' ) ),
-			'inkblot-webcomic-below'    => array( __( 'Webcomic Below', 'inkblot' ), __( 'Located below the webcomic on the home page and single-webcomic pages.', 'inkblot' ) ),
-			'inkblot-content-above'     => array( __( 'Content Above', 'inkblot' ), __( 'Located above the content block, just after the webcomic.', 'inkblot' ) ),
-			'inkblot-content-below'     => array( __( 'Content Below', 'inkblot' ), __( 'Located below the content block, just before the footer.', 'inkblot' ) ),
-			'inkblot-transcripts-above' => array( __( 'Transcripts Above', 'inkblot' ), __( 'Located above the transcripts section on single-webcomic pages.', 'inkblot' ) ),
-			'inkblot-transcripts-below' => array( __( 'Transcripts Below', 'inkblot' ), __( 'Located below the transcripts section on single-webcomic pages.', 'inkblot' ) ),
-			'inkblot-comments-above'    => array( __( 'Comments Above', 'inkblot' ), __( 'Located above the comments section on single-post pages.', 'inkblot' ) ),
-			'inkblot-comments-below'    => array( __( 'Comments Below', 'inkblot' ), __( 'Located below the comments section on single-post pages.', 'inkblot' ) )
+			array( 'id'=>'inkblot-sidebar1', 'name' => __( 'Sidebar 1', 'inkblot' ), 'description' => __( 'The first sidebar, used in both two and three-column layouts.', 'inkblot' ) ),
+			array( 'id'=>'inkblot-sidebar2', 'name' => __( 'Sidebar 2', 'inkblot' ), 'description' => __( 'The second sidebar, used in three-column layouts.', 'inkblot' ) ),
+			array( 'id'=>'inkblot-page-above', 'name' => __( 'Page Above', 'inkblot' ), 'description' => __( 'Located at the very top of every page, before the header.', 'inkblot' ) ),
+			array( 'id'=>'inkblot-page-below', 'name' => __( 'Page Below', 'inkblot' ), 'description' => __( 'Located at the very top of every page, before the footer.', 'inkblot' ) ),
+			array( 'id'=>'inkblot-webcomic-above', 'name' => __( 'Webcomic Above', 'inkblot' ), 'description' => __( 'Located above the webcomic on the home page and single-webcomic pages.', 'inkblot' ) ),
+			array( 'id'=>'inkblot-webcomic-below', 'name' => __( 'Webcomic Below', 'inkblot' ), 'description' => __( 'Located below the webcomic on the home page and single-webcomic pages.', 'inkblot' ) ),
+			array( 'id'=>'inkblot-content-above', 'name' => __( 'Content Above', 'inkblot' ), 'description' => __( 'Located above the content block, just after the webcomic.', 'inkblot' ) ),
+			array( 'id'=>'inkblot-content-below', 'name' => __( 'Content Below', 'inkblot' ), 'description' => __( 'Located below the content block, just before the footer.', 'inkblot' ) ),
+			array( 'id'=>'inkblot-transcripts-above', 'name' => __( 'Transcripts Above', 'inkblot' ), 'description' => __( 'Located above the transcripts section on single-webcomic pages.', 'inkblot' ) ),
+			array( 'id'=>'inkblot-transcripts-below', 'name' => __( 'Transcripts Below', 'inkblot' ), 'description' => __( 'Located below the transcripts section on single-webcomic pages.', 'inkblot' ) ),
+			array( 'id'=>'inkblot-comments-above', 'name' => __( 'Comments Above', 'inkblot' ), 'description' => __( 'Located above the comments section on single-post pages.', 'inkblot' ) ),
+			array( 'id'=>'inkblot-comments-below', 'name' => __( 'Comments Below', 'inkblot' ), 'description' => __( 'Located below the comments section on single-post pages.', 'inkblot' ) ),
+			array( 'id'=>'inkblot-footer-columns', 'name' => __( 'Footer Columns', 'inkblot' ), 'description' => __( 'Located in the Footer, split horizontally', 'inkblot' ) ),
+			array( 'id'=>'inkblot-footer-span', 'name' => __( 'Footer Span', 'inkblot' ), 'description' => __( 'Located in the Footer, below columns, spans width of page.', 'inkblot' ) )
 		);
-		
-		foreach ( $sidebars as $k => $v ) register_sidebar( array( 'id' => $k, 'name' => $v[ 0 ], 'description' => $v[ 1 ], 'before_widget' => '<figure id="%s" class="widget %s">', 'after_widget' => '</figure>', 'before_title' => '<figcaption>', 'after_title' => '</figcaption>' ) );
+		foreach ( $sidebars as $k => $v ) register_sidebar($v);
 	}
 	
 	/** Add custom body classes */
@@ -919,7 +920,14 @@ class inkblot_Walker_Comment extends Walker {
 	}
 }
 
-/* Customizing */
+/* 
+
+	
+	Customizing - The Stuff I (rusty) wrote 
+
+
+*/
+
 define("JUMP_ELE", "webcomic");
 function rel_url_jump($r){return "$r#".JUMP_ELE;}
 add_filter('webcomic_get_relative_url', 'rel_url_jump');
@@ -945,8 +953,10 @@ function pages_view(){
 }
 
 function random_backgroundImages_fromDir(
-	$dir="graphics/bubbles/",
-	$areas=null,
+	$count=50,
+	$x0=0,$x1=100,$xM="%",
+	$y0=0,$y1=100,$yM="%",
+	$dir="graphics/bubbles/",	
 	$echo=true
 ){
 	$pool = glob($dir."*.{png,gif,jpg,jpeg}", GLOB_BRACE);
@@ -955,47 +965,19 @@ function random_backgroundImages_fromDir(
 		foreach($pool as $k => $p)
 			$pool[$k] = str_replace(TEMPLATEPATH, get_bloginfo("template_url"), $p);
 	}
-	$defaults = array(
-		array(	
-			//Top
-			"count"=>array(40,50),
-			"area"=> array(
-				"x" => array(-2, 102, "%"), 
-				"y" => array(30,280,"px")
-		)),
-		array(
-			//Left
-			"count"=>array(35,50),
-			"area"=> array(
-				"x" => array(-2, 20, "%"), 
-				"y" => array(280,2800,"px")
-		)),
-		array(
-			//Right
-			"count"=>array(35,50),
-			"area"=>array(
-				"x" => array(80, 102, "%"), 
-				"y" => array(280,2800,"px")
-	)));
-
-	if(is_array($areas))
-		$areas = array_merge( $defaults, $areas );
-	else
-		$areas = $defaults;
+	$areaX=array($x0,$x1,$xM);
+	$areaY=array($y0,$y1,$yM);
 	
-	foreach($areas as $k => $v){
-		extract($v);
-		for(
-			$i=0; 
-			$i < (is_array($count) ? rand($count[0], $count[1]) : $count);
-			$i++
-		){
-			$r["img"][] = sprintf("url(%s)", $pool[rand(0, count($pool)-1)]);
-			$r["pos"][] = sprintf('%1$s %2$s',
-				rand($area["x"][0], $area["x"][1]).$area["x"][2],
-				rand($area["y"][0], $area["y"][1]).$area["y"][2]
-			);
-		}
+	for(
+		$i=0; 
+		$i < (is_array($count) ? rand($count[0], $count[1]) : $count);
+		$i++
+	){
+		$r["img"][] = sprintf("url(%s)", $pool[rand(0, count($pool)-1)]);
+		$r["pos"][] = sprintf('%1$s %2$s',
+			rand($areaX[0], $areaX[1]).$areaX[2],
+			rand($areaY[0], $areaY[1]).$areaY[2]
+		);
 	}
 	foreach($r as $k => $v)
 		$r[$k] = implode($v,",");
@@ -1003,8 +985,102 @@ function random_backgroundImages_fromDir(
 		return $r;
 	else{
 		echo 
-		sprintf("background-image:%s;",$r["img"]).
-		sprintf("background-position:%s;",$r["pos"]);
+		sprintf("background-image:%s;\n",$r["img"]).
+		sprintf("background-position:%s;\n",$r["pos"]);
 	}
 }
+
+// embed the javascript file that makes the AJAX request
+wp_enqueue_script( 'ajax-nav-request', get_bloginfo("template_directory")  . '/js/ajax.js', array( 'jquery' ) );
+wp_localize_script( 'ajax-nav-request', 'MyAjax', array('url' => admin_url( 'admin-ajax.php' )));
+
+// if both logged in and not logged in users can send this AJAX request,
+// add both of these actions, otherwise add only the appropriate one
+add_action( 'wp_ajax_nopriv_ajax-nav', 'ajax_nav' );
+add_action( 'wp_ajax_ajax-nav', 'ajax_nav' );
+
+function ajax_nav() { 
+	// get the submitted parameters
+	global $webcomic;
+	$r = array();
+	foreach(get_webcomic_nav_ids((int) $_POST['id']) as $k => $v){
+		$r[$k] = $webcomic->get_webcomic_post($v);
+	}
+	make_json($r);
+}
+function make_json($data){
+	// generate the response
+	$response = json_encode($data);
+	// response output
+	header( "Content-Type: application/json" );
+	echo $response;
+	// IMPORTANT: don't forget to "exit"
+	exit;
+}
+function ajax_the_id($id=null,$collection=''){
+	if(!$id)
+		$id = get_the_ID();
+	?>
+	<script>
+	/*<![CDATA[ */
+		MyAjax.id = <?php echo $id;?>;
+	/* ]]>*/
+	</script>
+	<?
+}
+
+function get_webcomic_nav_ids($id=null, $collection=''){
+	if(!$id)
+		$id = get_the_ID();
+	$query = new WP_Query(
+		array_merge(
+			Array(
+				'post_type'=>"webcomic_post",
+				'post_status' => "publish",
+				'posts_per_page' => 1000,				
+				'order' => "DESC"
+			)
+			,
+			($collection ? array() : array("webcomic_collection"=>$collection))
+		)
+	);
+	$i = null;	
+	$p = $query->posts;
+	foreach($p as $k => $v)
+		if($v->ID == $id)
+			$i = $k;
+	if($i)
+		return array(
+			"oldest"=>$p[count($p)-1]->ID,
+			"older"=>$p[($i < count($p)-1 ? $i+1 : 0)]->ID,		
+			"current"=>$id,
+			"newer"=>$p[($i > 0 ? $i-1 : 0)]->ID,		
+			"newest"=>$p[0]->ID	
+		);
+	else
+		return false;
+}
+function get_webcomic_all_ids($id=null, $collection=''){
+	if(!$id)
+		$id = get_the_ID();
+
+	$q = new WP_Query(
+		array_merge(
+			Array(
+				'post_type'=>"webcomic_post",
+				'post_status' => "publish",
+				'posts_per_page' => 1000,
+				'order' => "DESC"
+			)
+			,
+			($collection ? array() : array("webcomic_collection"=>$collection))
+		)
+	);
+	$r = array();
+	foreach($q->posts as $k => $v)
+		if($m = $v->menu_order) $r[$m] = $v->ID;
+		else $r[] = $v->ID;
+	return $r;
+}
+
 ?>

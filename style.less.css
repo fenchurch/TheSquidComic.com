@@ -39,15 +39,21 @@ Less Style
 	>div{max-width:initial;}
 }
 body{
-	position:relative;
-	background-color:@bg1;
-	&:before, &:after{.bg_repeat;}
-	&:before{
-		.after(-1000,100%,100%,absolute,0);
-		.bg_LinGrad;		
+	&:not(.page-template-comingSoon-php){
+		background-color:@bg1;
+		.bg_LinGrad;
+		.bg_repeat;
 	}
+	&:before{
+		.after(-3,100%,100%,absolute,0);
+		background-color:@bg1;			
+		.bg_LinGrad;		
+		.bg_repeat;
+	}
+	
 	&:after{
-		.after(-500,100%,100%,absolute,0);
+		.after(-2,100%,100%,absolute,0);
+		.bg_repeat;
 		.opacity(0.5);
 	}
 	>*{
@@ -118,12 +124,9 @@ a{
 			height:auto;
 		}
 	}
-	&,img{
-		position:relative;
-	}
-	img{z-index:-2;}
+	position:relative;
 	&:after{
-		.after(-1,100%,100%,absolute,0);
+		.after(1,100%,100%,absolute,0);
 		.bg_repeat;
 		.pad(0 0 1em 0);
 	}
@@ -133,7 +136,7 @@ a{
 	z-index:0;
 	>div{
 		border:1px solid #000;
-		.shadow(0,20px,40px,rgba(0,0,0,.5));
+		>div{	.shadow(0,20px,40px,rgba(0,0,0,.5));}		
 	}
 }
 .cols{
@@ -306,12 +309,6 @@ a{
 		}
 	}
 }
-.body{
-	>div{
-		border:5px solid #ddd;
-	}	
-}
-.content{
+.content article{
 	padding:1em;
-	border:1px solid #ccc;
 }

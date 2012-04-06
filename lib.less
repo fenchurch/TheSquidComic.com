@@ -85,35 +85,42 @@
 	-o-transform-origin: @arguments;
 	transform-origin: @arguments;		
 }
-.rounded-corners(){
+.borderRadius(@args:5px){
+	-webkit-border-radius:@args;
+	-moz-border-radius:@args;
+	-ms-border-radius:@args;
+	-o-border-radius:@args;
+	border-radius:@args;		
+}
+.rounded-corners(@arguments:5px){
 	-webkit-border-radius:@arguments;
 	-moz-border-radius:@arguments;
 	-ms-border-radius:@arguments;
 	-o-border-radius:@arguments;
 	border-radius:@arguments;	
 }
-.rounded-corners-top-left(){
+.rounded-corners-top-left(@arguments){
 	-webkit-border-top-left-radius:@arguments;
 	-moz-border-top-left-radius:@arguments;
 	-ms-border-top-left-radius:@arguments;	
 	-o-border-top-left-radius:@arguments;
 	border-top-left-radius:@arguments;
 }
-.rounded-corners-top-right(){
+.rounded-corners-top-right(@arguments){
 	-webkit-border-top-right-radius:@arguments;
 	-moz-border-top-right-radius:@arguments;
 	-ms-border-top-right-radius:@arguments;	
 	-o-border-top-right-radius:@arguments;
 	border-top-right-radius:@arguments;
 }
-.rounded-corners-bottom-left(){
+.rounded-corners-bottom-left(@arguments){
 	-webkit-border-bottom-left-radius:@arguments;
 	-moz-border-bottom-left-radius:@arguments;
 	-ms-border-bottom-left-radius:@arguments;	
 	-o-border-bottom-left-radius:@arguments;
 	border-bottom-left-radius:@arguments;
 }
-.rounded-corners-bottom-right(){
+.rounded-corners-bottom-right(@arguments){
 	-webkit-border-bottom-right-radius:@arguments;
 	-moz-border-bottom-right-radius:@arguments;
 	-ms-border-bottom-right-radius:@arguments;	
