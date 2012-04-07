@@ -1,9 +1,9 @@
 /*
 Theme Name: The Squid 
 Theme URI: http://github.com/fenchurch/thesquid/
-Description: Make an impression with the original, highly customizable <a href="http://webcomicms.net/">Webcomic</a> theme.
-Author: Michael Sisk
-Version: 3.0.8
+Description: Based on the original <a href="http://webcomicms.net/">Webcomic</a> theme.
+Author: Rusty Gibbs
+Version: 0.0.1
 */
 /** Reset */
 address,article,blockquote,body,caption,col,colgroup,dd,dialog,div,dl,dt,fieldset,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,hr,nav,legend,li,menu,ol,p,pre,section,table,tbody,td,tfoot,th,thead,tr,ul,a,abbr,b,bdo,br,cite,code,del,dfn,em,i,ins,kbd,label,mark,meter,progress,q,rp,rt,ruby,samp,small,span,strong,sub,sup,time,var,audio,canvas,embed,figure,figcaption,iframe,img,math,object,svg,video {
@@ -27,7 +27,7 @@ address,article,blockquote,body,caption,col,colgroup,dd,dialog,div,dl,dt,fieldse
 article,dialog,figure,figcaption,footer,header,hgroup,legend,nav,section { display: block; }
 
 /** Basic Styling */
-html                       { color: #000; font: 100%/1.2em 'helvetica neue', helvetica, arial, sans-serif; }
+html                       { color: #000; font: 100%/1.5em 'helvetica neue', helvetica, arial, sans-serif; }
 a                          { color: #ccc; }
 a:hover                    { color: #333; }
 abbr                       { border-bottom: 1px dotted; cursor: help; }

@@ -7,7 +7,12 @@ the_post();
 		<div id='main' class='body'>
 			<div>
 				<section class='content'>
-					<div style='float:right; margin-left:1em'><?php dynamic_sidebar('inkblot-sidebar2');?></div>
+					<div class='widget l'><?php
+					dynamic_sidebar('inkblot-sidebar1');
+					?></div>
+					<div class='widget r'><?php
+					dynamic_sidebar('inkblot-sidebar2');
+					?></div>
 					<article>
 						<header>
 							<hgroup>
