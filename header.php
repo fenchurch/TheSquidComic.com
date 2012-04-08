@@ -7,17 +7,11 @@
 
 ?>
 <style>
-	body{
-		font-family:"Helvetica Neue", Helvetica, Arial, Sans Serif;
-	}
 	body:after{
-		<?php random_backgroundImages_fromDir(); //Random generated ?>
+		<?php random_backgroundImages_fromDir(); //Random generated bubbles?>
 	}
 	.branding:after{
-		<?php random_backgroundImages_fromDir(); //Random generated ?>
-	}
-	.body>div{
-		background:#fff;
+		<?php random_backgroundImages_fromDir(); //Random generated bubbles?>
 	}
 </style>
 </head>

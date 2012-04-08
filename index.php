@@ -25,11 +25,10 @@ get_header("branding");
 ?>
 <div id='main' class='body'>
 	<div>
-		<section id='webcomic'>
-			<div>
 		<?php
 if ( is_home() && !is_paged() && $inkblot->option( 'home_webcomic_toggle' ) ) 
 {	
+	print("<!--is home, !paged-->");
 	$i = $inkblot->option( 'home_webcomic_collection' ); 
 	if ( !empty( $i ) ) 
 	{ 	
@@ -46,12 +45,11 @@ if ( is_home() && !is_paged() && $inkblot->option( 'home_webcomic_toggle' ) )
 		get_template_part( 'webcomic', 'home' ); 
 	} 
 } elseif ( is_singular( 'webcomic_post' ) ) 
-{	print("this a single");
+{
+	print("this a single");
 	get_template_part( 'webcomic', 'single' ); 
 } 
 ?>
-			<div>
-		</section>
 	</div>
 </div>
 <? get_footer(); ?>

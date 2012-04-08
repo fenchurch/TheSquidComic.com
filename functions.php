@@ -105,6 +105,12 @@ class inkblot extends mgs_core {
 		
 		wp_enqueue_script( 'html5shiv', 'http://html5shiv.googlecode.com/svn/trunk/html5.js' );
 		wp_enqueue_script( 'inkblot-scripts', $this->url . '/includes/scripts.js', array( 'jquery' ), '', true );
+		wp_register_style('style-reset', get_bloginfo( 'template_url')."/reset.css");
+		wp_register_style('style-sheet', get_bloginfo( 'stylesheet_url'));
+		wp_register_style('style-dynamic', get_bloginfo( 'template_url')."/style.php");
+		wp_enqueue_style('style-reset');
+		wp_enqueue_style('style-sheet');
+		wp_enqueue_style('style-dynamic');
 	}
 	
 	/** Add widgetized areas */
@@ -112,6 +118,8 @@ class inkblot extends mgs_core {
 		$sidebars = array(
 			array( 'id'=>'inkblot-sidebar1', 'name' => __( 'Sidebar 1', 'inkblot' ), 'description' => __( 'The first sidebar, used in both two and three-column layouts.', 'inkblot' ) ),
 			array( 'id'=>'inkblot-sidebar2', 'name' => __( 'Sidebar 2', 'inkblot' ), 'description' => __( 'The second sidebar, used in three-column layouts.', 'inkblot' ) ),
+			/*
+		//Not using these
 			array( 'id'=>'inkblot-page-above', 'name' => __( 'Page Above', 'inkblot' ), 'description' => __( 'Located at the very top of every page, before the header.', 'inkblot' ) ),
 			array( 'id'=>'inkblot-page-below', 'name' => __( 'Page Below', 'inkblot' ), 'description' => __( 'Located at the very top of every page, before the footer.', 'inkblot' ) ),
 			array( 'id'=>'inkblot-webcomic-above', 'name' => __( 'Webcomic Above', 'inkblot' ), 'description' => __( 'Located above the webcomic on the home page and single-webcomic pages.', 'inkblot' ) ),
@@ -122,6 +130,7 @@ class inkblot extends mgs_core {
 			array( 'id'=>'inkblot-transcripts-below', 'name' => __( 'Transcripts Below', 'inkblot' ), 'description' => __( 'Located below the transcripts section on single-webcomic pages.', 'inkblot' ) ),
 			array( 'id'=>'inkblot-comments-above', 'name' => __( 'Comments Above', 'inkblot' ), 'description' => __( 'Located above the comments section on single-post pages.', 'inkblot' ) ),
 			array( 'id'=>'inkblot-comments-below', 'name' => __( 'Comments Below', 'inkblot' ), 'description' => __( 'Located below the comments section on single-post pages.', 'inkblot' ) ),
+		//	 */
 			array( 'id'=>'inkblot-footer-columns', 'name' => __( 'Footer Columns', 'inkblot' ), 'description' => __( 'Located in the Footer, split horizontally', 'inkblot' ) ),
 			array( 'id'=>'inkblot-footer-span', 'name' => __( 'Footer Span', 'inkblot' ), 'description' => __( 'Located in the Footer, below columns, spans width of page.', 'inkblot' ) )
 		);
@@ -303,7 +312,6 @@ class inkblot extends mgs_core {
 		<meta charset="<?php bloginfo( 'charset' ); ?>">
 		<title><?php wp_title( '|', true, 'right' ); ?></title>
 		<meta name="description" content="<?php bloginfo( 'meta_description' ); ?>">
-		<link rel="stylesheet" href="<?php bloginfo( 'stylesheet_url' ); ?>">
 		<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
 		<link rel="icon" href="<?php bloginfo( 'icon_url' ); ?>">
 		<link rel="profile" href="http://gmpg.org/xfn/11">
@@ -951,7 +959,17 @@ function pages_view(){
 	print_r($webcomic->get_the_webcomic_archive("group=storyline&&image=small&group_image=medium"));
 	?></div><?php
 }
-
+function the_webcomic_object_nospan( $size = 'full', $link = false, $taxonomy = false, $terms = false, $key = false, $id = false ) { 
+	global $webcomic;
+	echo preg_replace('/<span.*?>(.*)<\/span>/','$1',$webcomic->get_the_webcomic_object( $size,$link,$taxonomy,$terms,$key,$id )); 
+}
+function the_webcomic_image($id=false){
+	$wc = get_webcomic_post($id);
+	$ID = ($id) ? $id : $wc->ID;
+	foreach($wc->webcomic_files["full"] as $k => $v){
+		printf('<img src="%1$s" id="webcomic_%2$s" />', $wc->webcomic_files["full"][0]['url'], "{$ID}_{$k}");
+	}
+}
 function random_backgroundImages_fromDir(
 	$count=50,
 	$x0=0,$x1=100,$xM="%",
