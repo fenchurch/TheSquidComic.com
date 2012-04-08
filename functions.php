@@ -10,7 +10,7 @@ if ( !class_exists( 'mgs_core' ) ) require_once( 'includes/mgs-core.php' );
 class inkblot extends mgs_core {
 	/** Override mgs_core variables */
 	protected $name    = 'thesquid';
-	protected $version = '0.0.1';
+	protected $version = '0.1.0';
 	protected $file    = __FILE__;
 	protected $type    = 'theme';
 	
@@ -69,7 +69,6 @@ class inkblot extends mgs_core {
 	/** Add standard features */
 	function hook_after_setup_theme() {
 		$this->domain();
-		
 		//remove_action( 'wp_head', 'rsd_link' );
 		//remove_action( 'wp_head', 'wlwmanifest_link' );
 		
@@ -105,11 +104,14 @@ class inkblot extends mgs_core {
 		
 		wp_enqueue_script( 'html5shiv', 'http://html5shiv.googlecode.com/svn/trunk/html5.js' );
 		wp_enqueue_script( 'inkblot-scripts', $this->url . '/includes/scripts.js', array( 'jquery' ), '', true );
+
 		wp_register_style('style-reset', get_bloginfo( 'template_url')."/reset.css");
-		wp_register_style('style-sheet', get_bloginfo( 'stylesheet_url'));
-		wp_register_style('style-dynamic', get_bloginfo( 'template_url')."/style.php");
 		wp_enqueue_style('style-reset');
+		
+		wp_register_style('style-sheet', get_bloginfo( 'stylesheet_url'));
 		wp_enqueue_style('style-sheet');
+		
+		wp_register_style('style-dynamic', get_bloginfo( 'template_url')."/style.php");
 		wp_enqueue_style('style-dynamic');
 	}
 	
@@ -136,7 +138,6 @@ class inkblot extends mgs_core {
 		);
 		foreach ( $sidebars as $k => $v ) register_sidebar($v);
 	}
-	
 	/** Add custom body classes */
 	function hook_body_class( $classes ) {
 		if ( $is_iphone ) $classes[] = 'device-iphone';
@@ -170,7 +171,7 @@ class inkblot extends mgs_core {
 	/** Add custom url bloginfo */
 	function hook_bloginfo_url( $r, $s ) {
 		if ( 'icon_url' == $s )
-			$r = $this->url . '/images/icon.png';
+			$r = $this->url . '/images/icon.gif';
 		
 		return $r;
 	}
@@ -385,6 +386,7 @@ class inkblot extends mgs_core {
 	
 	/** Display custom layout CSS */
 	function custom_layout() {
+		
 		$l = explode( 'c', $this->option( 'layout' ) );
 		$s = false;
 		
@@ -453,11 +455,13 @@ class inkblot extends mgs_core {
 	
 	/** Add the custom layout page */
 	function hook_admin_menu() {
+		
 		add_theme_page( __( 'Layout', 'inkblot' ), __( 'Layout', 'inkblot' ), 'edit_theme_options', basename( __FILE__ ), array( &$this, 'admin_layout' ) );
 		add_meta_box( 'inkblot', __( 'Inkblot', 'inkblot' ), array( &$this, 'admin_metabox' ), 'page', 'normal', 'high' );
 	}
 	
 	function hook_admin_notices() {
+		
 		if ( $this->update ) { ?><div id="message" class="updated fade"><p><?php echo implode( '</p><p>', $this->update ); ?></p></div><?php }
 		if ( $this->errors ) { ?><div id="message" class="error"><p><?php echo implode( '</p><p>', $this->errors ); ?></p></div><?php }
 	}
@@ -936,6 +940,12 @@ class inkblot_Walker_Comment extends Walker {
 
 */
 
+function favicon(){
+	echo '<link rel="Shortcut Icon" type="image/png" href="'.get_bloginfo('stylesheet_directory').'/images/icon.png" />';
+}
+add_action('admin_head', 'favicon');
+add_action('wp_head', 'favicon');
+
 define("JUMP_ELE", "webcomic");
 function rel_url_jump($r){return "$r#".JUMP_ELE;}
 add_filter('webcomic_get_relative_url', 'rel_url_jump');
@@ -963,13 +973,31 @@ function the_webcomic_object_nospan( $size = 'full', $link = false, $taxonomy = 
 	global $webcomic;
 	echo preg_replace('/<span.*?>(.*)<\/span>/','$1',$webcomic->get_the_webcomic_object( $size,$link,$taxonomy,$terms,$key,$id )); 
 }
-function the_webcomic_image($id=false){
+function get_the_webcomic_image($id=false){
 	$wc = get_webcomic_post($id);
 	$ID = ($id) ? $id : $wc->ID;
-	foreach($wc->webcomic_files["full"] as $k => $v){
-		printf('<img src="%1$s" id="webcomic_%2$s" />', $wc->webcomic_files["full"][0]['url'], "{$ID}_{$k}");
+	$wc = $wc->webcomic_files["full"];
+	$r = false;
+	if($count = count($wc)){
+		$imgFmt = '<img src="%1$s" id="webcomic_image_%2$s" />';
+		if($count>1){
+			//If Multiple, Return Array
+			$r = array();	
+			foreach($wc as $k => $v)
+				$r[$k] = sprintf($imgFmt, $wc[$k]['url'], $ID."_".$k);
+		}else{
+			//If Singular, Return String
+			$r = sprintf($imgFmt, $wc[0]['url'], $ID);
+		}
 	}
+	return $r;
 }
+function the_webcomic_image($id=false){
+	$img = get_the_webcomic_image($id);
+	if(count($img)>1) foreach($img as $i) echo $i;
+	else echo $img;
+}
+
 function random_backgroundImages_fromDir(
 	$count=50,
 	$x0=0,$x1=100,$xM="%",
