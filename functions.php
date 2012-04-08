@@ -941,7 +941,7 @@ class inkblot_Walker_Comment extends Walker {
 */
 
 function favicon(){
-	echo '<link rel="Shortcut Icon" type="image/png" href="'.get_bloginfo('stylesheet_directory').'/images/icon.png" />';
+	echo '<link rel="Shortcut Icon" type="image/png" href="'.get_bloginfo('stylesheet_directory').'/images/favicon.png" />';
 }
 add_action('admin_head', 'favicon');
 add_action('wp_head', 'favicon');
@@ -1002,7 +1002,7 @@ function random_backgroundImages_fromDir(
 	$count=50,
 	$x0=0,$x1=100,$xM="%",
 	$y0=0,$y1=100,$yM="%",
-	$dir="graphics/bubbles/",	
+	$dir="images/bubbles/",	
 	$echo=true
 ){
 	$pool = glob($dir."*.{png,gif,jpg,jpeg}", GLOB_BRACE);

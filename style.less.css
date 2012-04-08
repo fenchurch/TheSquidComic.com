@@ -11,7 +11,7 @@
 @fg	:#FFFFFF;
 @fgColor:#999999;
 
-@graphics_dir:"graphics/images/";
+@graphics_dir:"images/";
 @wrapW	:1125px;
 @padT	:0;
 @padL	:1em;
@@ -265,20 +265,20 @@ a{
 		}
 		.inline{
 			@ext:~".png";
-			.img(@pos){
+			.img(@pos,@rollX,@rollY){
 				a{	.bg_img(~"@{pos}@{ext}");
-					&:hover{.bg_img(~"@{pos}-sh@{ext}");}
+					&:hover{background-position:-@rollX -@rollY}
 				}
 			}
 			.icons(@w,@h,@suffix:~""){
-				.first{.img("first@{suffix}");}
-				.prev{.img("prev@{suffix}");}
-				.next{.img("next@{suffix}");}
-				.last{.img("last@{suffix}");}
-				.link{.img("link@{suffix}");}		
+				.first{.img("first@{suffix}",0,@h);}
+				.prev{.img("prev@{suffix}",0,@h);}
+				.next{.img("next@{suffix}",0,@h);}
+				.last{.img("last@{suffix}",0,@h);}
+				.link{.img("link@{suffix}",0,@h);}		
 				a{	.dim(@w,@h);}
 			}
-			.tooltipImg(@k){>p{.bg_img("cb_@{k}@{ext}");}}
+			.tooltipImg(@k){>p{.bg_img("chat_bubbles/cb_@{k}@{ext}");}}
 			.tooltip(@k:a){
 				&._0{.tooltipImg("@{k}0");}
 				&._1{.tooltipImg("@{k}1");}
