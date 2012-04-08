@@ -278,7 +278,7 @@ a{
 				.link{.img("link@{suffix}",0,@h);}		
 				a{	.dim(@w,@h);}
 			}
-			.tooltipImg(@k){>p{.bg_img("chat_bubbles/cb_@{k}@{ext}");}}
+			.tooltipImg(@k){>p{.bg_img("chat_bubbles/@{k}@{ext}");}}
 			.tooltip(@k:a){
 				&._0{.tooltipImg("@{k}0");}
 				&._1{.tooltipImg("@{k}1");}
@@ -286,7 +286,7 @@ a{
 			}
 			.pad(1em 0);
 			&.txt{	.icons(100px,35px);}
-			&.icon{	.icons(50px,50px,"_icon");}
+			&.icon{	.icons(50px,43px,"_icon");}
 			a{.display;}
 			p{}
 			>.l,>.r{.w(auto, 50%);
