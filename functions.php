@@ -1,5 +1,5 @@
 <?php
-
+require_once("my_functions.php");
 /** Set the content width */
 if ( !isset( $content_width ) ) $content_width = 1125;
 
@@ -32,6 +32,7 @@ class inkblot extends mgs_core {
 			'home_webcomic_toggle'     => true,
 			'home_webcomic_order'      => 'DESC',
 			'home_webcomic_collection' => false,
+			'home_webcomic_storyline' => false,
 			'single_webcomic_link'     => false,
 			'archive_webcomic_toggle'  => true,
 			'archive_webcomic_size'    => 'small',
@@ -118,8 +119,8 @@ class inkblot extends mgs_core {
 	/** Add widgetized areas */
 	function hook_init() {
 		$sidebars = array(
-			array( 'id'=>'inkblot-sidebar1', 'name' => __( 'Sidebar 1', 'inkblot' ), 'description' => __( 'The first sidebar, used in both two and three-column layouts.', 'inkblot' ) ),
-			array( 'id'=>'inkblot-sidebar2', 'name' => __( 'Sidebar 2', 'inkblot' ), 'description' => __( 'The second sidebar, used in three-column layouts.', 'inkblot' ) ),
+			array( 'id'=>'sidebar1', 'name' => __( 'Sidebar 1', 'inkblot' ), 'description' => __( 'The first sidebar, used in both two and three-column layouts.', 'inkblot' ) ),
+			array( 'id'=>'sidebar2', 'name' => __( 'Sidebar 2', 'inkblot' ), 'description' => __( 'The second sidebar, used in three-column layouts.', 'inkblot' ) ),
 			/*
 		//Not using these
 			array( 'id'=>'inkblot-page-above', 'name' => __( 'Page Above', 'inkblot' ), 'description' => __( 'Located at the very top of every page, before the header.', 'inkblot' ) ),
@@ -200,14 +201,27 @@ class inkblot extends mgs_core {
 		if ( is_feed() )
 			return $title;
 		
-		global $paged, $page;
-		
+		global $paged, $page, $post;
 		$a = explode( " $sep ", $title );
 		$p = ( 1 < $paged || 1 < $page ) ? sprintf( __( 'Page %s', 'inkblot' ), max( $paged, $page ) ) : '';
-		$n = array( $p, get_bloginfo( 'name', 'display' ), get_bloginfo( 'description', 'display' ) );
+		$n = array($p);
+
+		/*Redo this, not working on taxonomies*/
+		if($post->post_type == "webcomic_post"){
+			$storylines = array();
+			foreach(get_the_terms($post->ID, "webcomic_storyline") as $i) $storylines[] = $i->name;
+			$n[] = implode(" $sep ", $storylines);
+
+			$collections = array();
+			foreach(get_the_terms($post->ID, "webcomic_collection") as $i) $collections[] = $i->name;
+				$n[] = implode(" $sep ", $collections);
+		}
+		$n[] = get_bloginfo( 'name', 'display' );
 		
-		if ( !is_home() || !is_front_page() )
-			unset( $n[ 2 ] );
+		if ( is_home() || is_front_page() )
+			$n[] = get_bloginfo( 'description', 'display' );
+
+		$n = array_unique($n);
 		
 		$a = ( 'right' == $seplocation ) ? array_merge( $a, $n ) : array_merge( $n, $a );
 		
@@ -217,7 +231,7 @@ class inkblot extends mgs_core {
 		
 		return implode( " $sep ", $a );
 	}
-	
+
 	/** Change the exceprt word length */
 	function hook_excerpt_length( $l ) {
 		return 60;
@@ -398,7 +412,9 @@ class inkblot extends mgs_core {
 			$s = '#wrap{';
 		
 		$s .= 'width:' . $this->option( 'dim_site' ) . 'px}';
-		
+		$sw1 = $this->option('dim_sidebar1') ? "width:{$this->option('dim_sidebar1')}px;": "";
+		$sw2 = $this->option('dim_sidebar2') ? "width:{$this->option('dim_sidebar2')}px;": "";
+
 		if ( 3 == $l[ 0 ] ) {
 			$s1 = $s2 = false;
 			$s .= '#content{width:' . $this->option( 'dim_content' ) . 'px;';
@@ -412,12 +428,17 @@ class inkblot extends mgs_core {
 			else
 				$s .= 'float:left}#sidebar1,#sidebar2{float:right}';
 			
-			$s .= '#sidebar1{' . $s1 .'width:' . $this->option( 'dim_sidebar1' ) . 'px}#sidebar2{' . $s2 .'width:' . $this->option( 'dim_sidebar2' ) . 'px}';
+			$s .= 	'#sidebar1{'.$s1.$sw1.'}'.
+				'#sidebar2{'.$s2.$sw2.'}';
 			
 			if ( 6 == $l[ 1 ] )
 				$s = str_replace( '#content', '#main', $s );
 		} elseif ( 2 == $l[ 0 ] ) {
-			$s .= '#sidebar2{display:none}#content{width:' . $this->option( 'dim_content' ) . 'px;' . ( ( $l[ 1 ] % 2 ) ? 'float:left}#sidebar1{float:right;width:' . $this->option( 'dim_sidebar1' ) . 'px}' : 'float:right}#sidebar1{float:left;width:' . $this->option( 'dim_sidebar1' ) . 'px}' );
+			$s .= 	'#sidebar2{display:none}'.
+				'#content{width:' . $this->option( 'dim_content' ) . 'px;' .
+				( ( $l[ 1 ] % 2 ) 
+				? 'float:left}#sidebar1{float:right;'.$sw1.'}' 
+				: 'float:right}#sidebar1{float:left;'.$sw2.'}' );
 			
 			if ( 3 == $l[ 1 ] || 4 == $l[ 1 ] )
 				$s = str_replace( '#content', '#main', $s );
@@ -485,6 +506,7 @@ class inkblot extends mgs_core {
 			$new[ 'home_webcomic_toggle' ]     = ( isset( $_POST[ 'home_webcomic_toggle' ] ) ) ? true : false;
 			$new[ 'home_webcomic_order' ]      = $_REQUEST[ 'home_webcomic_order' ];
 			$new[ 'home_webcomic_collection' ] = intval( $_REQUEST[ 'home_webcomic_collection' ] );
+			$new[ 'home_webcomic_storyline' ] = intval( $_REQUEST[ 'home_webcomic_storyline' ] );
 			$new[ 'single_webcomic_link' ]     = ( isset( $_REQUEST[ 'single_webcomic_toggle' ] ) ) ? $_REQUEST[ 'single_webcomic_link' ] : false;
 			$new[ 'archive_webcomic_toggle' ]  = ( isset( $_REQUEST[ 'archive_webcomic_toggle' ] ) ) ? true : false;
 			$new[ 'archive_webcomic_size' ]    = $_REQUEST[ 'archive_webcomic_size' ];
@@ -583,18 +605,28 @@ class inkblot extends mgs_core {
 										default     : $b = ' selected';
 									}
 									
-									$s = '
+									$w = '
 									<select name="home_webcomic_order">
 										<option value="ASC"' . $b . '>' . __( 'first', 'inkblot' ) . '</option>
 										<option value="DESC"' . $a . '>' . __( 'last', 'inkblot' ) . '</option>
 									</select>'; unset( $a, $b );
 									
-									$walker   = new webcomic_Walker_AdminTermDropdown();
-									$selected = array( $this->option( 'home_webcomic_collection' ) );
-								
-									$t = '<select name="home_webcomic_collection"><option value="0">' . __( 'any collection', 'inkblot' ) . '</option>' . $walker->walk( get_terms( 'webcomic_collection', 'get=all' ), 0, array( 'selected' => $selected ) ) . '</select>';
+									$homeStorylineWalker   = new webcomic_Walker_AdminTermDropdown();
+									$homeStoryline = array( $this->option( 'home_webcomic_storyline' ) );
+									$s = '<select name="home_webcomic_storyline">'.
+										'<option value="0">'. __( 'any storyline', 'inkblot').'</option>'.
+										$homeStorylineWalker->walk( get_terms( 'webcomic_storyline', 'get=all'), 0, array( 'selected' => $homeStoryline) ).
+									'</select>';
 									
-									printf( __( 'Show the %s webcomic from %s on the home page', 'inkblot' ), $s, $t );
+									$homeCollectionWalker   = new webcomic_Walker_AdminTermDropdown();
+									$homeCollection = array( $this->option( 'home_webcomic_collection' ) );
+									
+									$c = '<select name="home_webcomic_collection">'.
+										'<option value="0">' . __( 'any collection', 'inkblot' ) . '</option>' .
+										$homeCollectionWalker->walk( get_terms( 'webcomic_collection', 'get=all' ), 0, array( 'selected' => $homeCollection ) ) . 
+									'</select>';
+									
+									printf( __( 'Show the %s webcomic from %s storyline, of %s collection on the home page', 'inkblot' ), $w, $s, $c );
 								?>
 							</p>
 							<p>
@@ -930,203 +962,6 @@ class inkblot_Walker_Comment extends Walker {
 	function end_el( &$output, $comment, $depth, $args ) {
 		echo '</article>';
 	}
-}
-
-/* 
-
-	
-	Customizing - The Stuff I (rusty) wrote 
-
-
-*/
-
-function favicon(){
-	echo '<link rel="Shortcut Icon" type="image/png" href="'.get_bloginfo('stylesheet_directory').'/images/favicon.png" />';
-}
-add_action('admin_head', 'favicon');
-add_action('wp_head', 'favicon');
-
-define("JUMP_ELE", "webcomic");
-function rel_url_jump($r){return "$r#".JUMP_ELE;}
-add_filter('webcomic_get_relative_url', 'rel_url_jump');
-
-function rel_link_jump($r){return preg_replace( '/href="(.*?)"/', 'href="$1#'.JUMP_ELE.'"', $r);}
-add_filter('webcomic_get_relative_link', 'rel_link_jump');
-
-function get_webcomic_permalink(){
-	$wc = get_webcomic_post();
-	return $wc->guid."#".JUMP_ELE;
-}
-function the_webcomic_link($format = "%link", $link='%label'){
-	global $webcomic, $id;
-	$label = '<span>'.__('&infin;', 'webcomic').'<span>';
-	$link = '<a href="%s" rel="permalink" class="permalink-webcomic-link">'.$label.'</a>';
-	echo sprintf($link, rel_url_jump(get_permalink($id)));
-}
-function pages_view(){
-	global $webcomic, $id;
-	?><div class='webcomics-pages'><?php
-	print_r($webcomic->get_the_webcomic_archive("group=storyline&&image=small&group_image=medium"));
-	?></div><?php
-}
-function the_webcomic_object_nospan( $size = 'full', $link = false, $taxonomy = false, $terms = false, $key = false, $id = false ) { 
-	global $webcomic;
-	echo preg_replace('/<span.*?>(.*)<\/span>/','$1',$webcomic->get_the_webcomic_object( $size,$link,$taxonomy,$terms,$key,$id )); 
-}
-function get_the_webcomic_image($id=false){
-	$wc = get_webcomic_post($id);
-	$ID = ($id) ? $id : $wc->ID;
-	$wc = $wc->webcomic_files["full"];
-	$r = false;
-	if($count = count($wc)){
-		$imgFmt = '<img src="%1$s" id="webcomic_image_%2$s" />';
-		if($count>1){
-			//If Multiple, Return Array
-			$r = array();	
-			foreach($wc as $k => $v)
-				$r[$k] = sprintf($imgFmt, $wc[$k]['url'], $ID."_".$k);
-		}else{
-			//If Singular, Return String
-			$r = sprintf($imgFmt, $wc[0]['url'], $ID);
-		}
-	}
-	return $r;
-}
-function the_webcomic_image($id=false){
-	$img = get_the_webcomic_image($id);
-	if(count($img)>1) foreach($img as $i) echo $i;
-	else echo $img;
-}
-
-function random_backgroundImages_fromDir(
-	$count=50,
-	$x0=0,$x1=100,$xM="%",
-	$y0=0,$y1=100,$yM="%",
-	$dir="images/bubbles/",	
-	$echo=true
-){
-	$pool = glob($dir."*.{png,gif,jpg,jpeg}", GLOB_BRACE);
-	if(!count($pool)){
-		$pool = glob(TEMPLATEPATH."/$dir"."*.{png,gif,jpg}", GLOB_BRACE);
-		foreach($pool as $k => $p)
-			$pool[$k] = str_replace(TEMPLATEPATH, get_bloginfo("template_url"), $p);
-	}
-	$areaX=array($x0,$x1,$xM);
-	$areaY=array($y0,$y1,$yM);
-	
-	for(
-		$i=0; 
-		$i < (is_array($count) ? rand($count[0], $count[1]) : $count);
-		$i++
-	){
-		$r["img"][] = sprintf("url(%s)", $pool[rand(0, count($pool)-1)]);
-		$r["pos"][] = sprintf('%1$s %2$s',
-			rand($areaX[0], $areaX[1]).$areaX[2],
-			rand($areaY[0], $areaY[1]).$areaY[2]
-		);
-	}
-	foreach($r as $k => $v)
-		$r[$k] = implode($v,",");
-	if(!$echo)
-		return $r;
-	else{
-		echo 
-		sprintf("background-image:%s;\n",$r["img"]).
-		sprintf("background-position:%s;\n",$r["pos"]);
-	}
-}
-
-// embed the javascript file that makes the AJAX request
-wp_enqueue_script( 'ajax-nav-request', get_bloginfo("template_directory")  . '/js/ajax.js', array( 'jquery' ) );
-wp_localize_script( 'ajax-nav-request', 'MyAjax', array('url' => admin_url( 'admin-ajax.php' )));
-
-// if both logged in and not logged in users can send this AJAX request,
-// add both of these actions, otherwise add only the appropriate one
-add_action( 'wp_ajax_nopriv_ajax-nav', 'ajax_nav' );
-add_action( 'wp_ajax_ajax-nav', 'ajax_nav' );
-
-function ajax_nav() { 
-	// get the submitted parameters
-	global $webcomic;
-	$r = array();
-	foreach(get_webcomic_nav_ids((int) $_POST['id']) as $k => $v){
-		$r[$k] = $webcomic->get_webcomic_post($v);
-	}
-	make_json($r);
-}
-function make_json($data){
-	// generate the response
-	$response = json_encode($data);
-	// response output
-	header( "Content-Type: application/json" );
-	echo $response;
-	// IMPORTANT: don't forget to "exit"
-	exit;
-}
-function ajax_the_id($id=null,$collection=''){
-	if(!$id)
-		$id = get_the_ID();
-	?>
-	<script>
-	/*<![CDATA[ */
-		MyAjax.id = <?php echo $id;?>;
-	/* ]]>*/
-	</script>
-	<?
-}
-
-function get_webcomic_nav_ids($id=null, $collection=''){
-	if(!$id)
-		$id = get_the_ID();
-	$query = new WP_Query(
-		array_merge(
-			Array(
-				'post_type'=>"webcomic_post",
-				'post_status' => "publish",
-				'posts_per_page' => 1000,				
-				'order' => "DESC"
-			)
-			,
-			($collection ? array() : array("webcomic_collection"=>$collection))
-		)
-	);
-	$i = null;	
-	$p = $query->posts;
-	foreach($p as $k => $v)
-		if($v->ID == $id)
-			$i = $k;
-	if($i)
-		return array(
-			"oldest"=>$p[count($p)-1]->ID,
-			"older"=>$p[($i < count($p)-1 ? $i+1 : 0)]->ID,		
-			"current"=>$id,
-			"newer"=>$p[($i > 0 ? $i-1 : 0)]->ID,		
-			"newest"=>$p[0]->ID	
-		);
-	else
-		return false;
-}
-function get_webcomic_all_ids($id=null, $collection=''){
-	if(!$id)
-		$id = get_the_ID();
-
-	$q = new WP_Query(
-		array_merge(
-			Array(
-				'post_type'=>"webcomic_post",
-				'post_status' => "publish",
-				'posts_per_page' => 1000,
-				'order' => "DESC"
-			)
-			,
-			($collection ? array() : array("webcomic_collection"=>$collection))
-		)
-	);
-	$r = array();
-	foreach($q->posts as $k => $v)
-		if($m = $v->menu_order) $r[$m] = $v->ID;
-		else $r[] = $v->ID;
-	return $r;
 }
 
 ?>

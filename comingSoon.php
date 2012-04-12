@@ -6,15 +6,7 @@ the_post();
 ?>
 		<div id='main' class='body'>
 			<div>
-				<section class='webcomic'></section>
-				<section class='widgets'>
-					<div class='widget l'><?php
-					dynamic_sidebar('inkblot-sidebar1');
-					?></div>
-					<div class='widget r'><?php
-					dynamic_sidebar('inkblot-sidebar2');
-					?></div>
-				</section>
+				<?php get_sidebar("body");?>
 				<section class='content'>
 					<article>
 						<header>
@@ -26,8 +18,8 @@ the_post();
 							<?php the_content();?>
 						</div>
 					</article>
-					<hr>
 				</section>
+				<hr>
 			</div>
 		</div>
 <?php 
