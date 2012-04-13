@@ -261,16 +261,12 @@ function comic_nav(){
 			$r[] = my_list($c_label, $collection, webcomic_taxs($c));
 			$r[] = my_list($s_label, $storyline, webcomic_taxs($s, $storyline->term_group));
 			$r[] = my_list($p_label, $post, get_webcomics_data(), false);
-		}else{
-			print_r($inkblot);
-			if($inkblot->home_webcomic_toggle){
-				print("blah");
-				$collection = get_term($inkblog->home_webcomic_collection, "webcomic_$c");
-				if(!empty($collection))
-					$r[] = my_list($c_label, $collection, webcomic_taxs($c));
-				$storyline = get_term($inkblog->home_webcomic_storyline, "webcomic_$s");
-				if(!empty($storyline))
-					$r[] = my_list($s_label, $storyline, webcomic_taxs($s, $storyline->term_group));
+		}elseif(is_home()){
+			if($inkblot->options["home_webcomic_toggle"]){
+				$collection = $inkblot->options["home_webcomic_collection"];
+				$r[] = my_list($c_label, get_term($collection, "webcomic_$c"), webcomic_taxs($c));
+				$storyline = $inkblot->options["home_webcomic_storyline"];
+				$r[] = my_list($s_label, get_term($storyline, "webcomic_$s"), webcomic_taxs($s));
 			}
 		}
 		foreach($r as $k => $v){
@@ -334,7 +330,16 @@ function my_list($label, $root, $data, $exclude_self=true){
 		$groupClass = $groupClass ? " class='$groupClass'" : "";
 		$r = $beforeGroup.sprintf("<$groupTag$groupClass>".'%s'."</$groupTag>", $r).$afterGroup;
 
-		return sprintf($a, $label, (!$using_label? get_term_link($root) : "")).$r;	
+		return sprintf($a, $label, 
+		//	((!$using_label && $root)
+		//		? ($term 
+		//			? get_term_link($root)
+		//			: get_permalink($root->ID)
+		//		)
+		//		: ""
+		//	)
+		""
+		).$r;	
 	}
 }
 ?>

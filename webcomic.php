@@ -32,8 +32,9 @@ $inline_link = '<li class="%1$s %2$s"><a href="%3$s"></a><div><div></div><span>%
 				?></ul>
 				<ul><?php printf($inline_link, "link", tooltip($r), get_permalink($navIDs['current']), "Permalink");?></ul>
 			</nav>
+			<?php get_template_part("webcomic", "post");?>
 		</section>
+
 	</div><div>
 		<?php get_sidebar("body");?>
-		<?php get_template_part("webcomic", "post");?>
 <!--.webcomic<?php the_ID();?> end-->
