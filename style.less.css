@@ -212,11 +212,13 @@ a{
 
 }
 .body{
-	>div{
-		border:5px solid #ddd;
+	>div{}
+	a{
+		color:darken(@pink1, 30%);
+		&:hover{color:transparent; text-shadow:0px -1px 0 @pink1, 0 0 1px #000 ; }
 	}
 	section{
-		margin:1em;
+		padding:1em;
 	}
 	.content{
 		font-weight:400;
@@ -228,32 +230,20 @@ a{
 		&.r{float:right; margin-left:1em;}
 	}
 	.webcomic{
-		@borderWidth:1px;
+		padding:0;
 		margin:0;
 		article{
 			.pos;
-			>.cur{
-				img {.float;.dim;}
+			.clip;
+			overflow:hidden;
+			>.cur,
+			>.load{
+				img {.float;}
 				.pos;
 				.z(-1);
 			}
-			>.prev, >.next{
-				margin:-@borderWidth;
-				border:1px solid #000;	
-				.abs(@fxLayer, 0, 100%, 100%);		
-				.overflow;
-				.opacity;
-				.origin;
-			//	img{.h(100%);}
-				&.hidden{.novis;}
-			}
-			>.go{}		
-			>.prev.go, >.next{
-				.w; 
-			}
-			>.next.go, >.prev{
-				.w(0);
-			}
+			>.cur{ img{.dim(100%,auto);}}
+			>.load{.dim; img{.dim;}}
 		}
 
 
@@ -294,17 +284,17 @@ a{
 		margin:0 1em;
 		@ext:~".png";
 		.img(@pos,@rollX,@rollY){
-			a{	.bg_img(~"@{pos}@{ext}");
+			a,p{	.bg_img(~"@{pos}@{ext}");
 				&:hover{background-position:-@rollX -@rollY}
 			}
 		}
 		.icons(@w,@h,@suffix:~""){
-			.first{.img("first@{suffix}",0,@h);}
-			.prev{.img("prev@{suffix}",0,@h);}
-			.next{.img("next@{suffix}",0,@h);}
-			.last{.img("last@{suffix}",0,@h);}
-			.link{.img("link@{suffix}",0,@h);}		
-			a{	.dim(@w,@h);}
+			.oldest{.img("first@{suffix}",0,@h);}
+			.older{.img("prev@{suffix}",0,@h);}
+			.newer{.img("next@{suffix}",0,@h);}
+			.newest{.img("last@{suffix}",0,@h);}
+			.current{.img("link@{suffix}",0,@h);}		
+			a,p{	.dim(@w,@h);}
 		}
 		.tooltipImg(@k){
 			>div>div{.display;
@@ -320,8 +310,8 @@ a{
 		.pad(1em 0);
 		&.txt{	.icons(100px,35px);}
 		&.icon{	.icons(50px,43px,"_icon");}
-		a{.display;}
-		p{}
+		a,p{.display;}
+		p{.margin; cursor:pointer;}
 		>.l,>.r{.w(auto, 50%);
 			.float;		
 			line-height:0;
@@ -342,7 +332,7 @@ a{
 				&._1{>div{margin-left:-50px;}}
 				&._2{>div{margin-left:-98px;}}
 
-				>a{
+				>a,>p{
 					.maxW;
 					.bg_repeat;
 				}

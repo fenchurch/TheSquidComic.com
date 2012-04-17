@@ -117,6 +117,7 @@ function tooltip($arg, $pref=false){
 }
 
 wp_enqueue_script( 'my-scripts',  get_bloginfo("template_directory"). '/js/scripts.js', array( 'jquery' ) );
+wp_enqueue_script( 'jquery-easing',  get_bloginfo("template_directory"). '/js/easing.js', array( 'jquery' ) );
 
 // embed the javascript file that makes the AJAX request
 wp_enqueue_script( 'ajax-nav-request', get_bloginfo("template_directory")  . '/js/ajax.js', array( 'jquery' ) );
@@ -131,9 +132,8 @@ function ajax_nav() {
 	// get the submitted parameters
 	global $webcomic;
 	$r = array();
-	foreach(get_webcomic_nav_ids((int) $_POST['id']) as $k => $v){
+	foreach(get_webcomic_nav_ids((int) $_POST['id']) as $k => $v)
 		$r[$k] = $webcomic->get_webcomic_post($v);
-	}
 	make_json($r);
 }
 function make_json($data){

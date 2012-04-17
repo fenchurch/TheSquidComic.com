@@ -1,15 +1,14 @@
 var nav_ajax;
 (function($){
-	console.log("TEST");
-	nav_ajax = function($whereTo){
+	nav_ajax = function(id, comp){
 		$.post(
 			MyAjax.url,
 			{
 				action	:'ajax-nav',
-				id	: MyAjax.id
+				id	:id
 			},
 			function(r){
-				console.log(r);
+				comp(r);
 			}
 		)
 	}
