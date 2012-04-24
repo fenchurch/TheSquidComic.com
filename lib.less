@@ -53,7 +53,7 @@
 }
 .bg(@color){background:@arguments;}
 .bg(@color,@url){background:@arguments;}
-.bg(@color,@url,@repeat){background:@arguments;}
+.bg(@color,@url,@repeat){background:@arguments}
 .bg(@color,@url,@repeat, @pos){background:@arguments;}
 .bg(@color,@url,@repeat, @posX, @posY){background:@arguments;}
 
@@ -62,6 +62,12 @@
 }
 .bg_repeat(@repeat:no-repeat){
 	background-repeat:@repeat;
+}
+.bg_pos(){
+	background-position:@arguments;
+}
+.bg_pos(@x, @y){
+	background-position:@x @y;
 }
 /* vendor kits with Fallbacks*/
 .bg_LinGrad(@pos:top, @from:@bg0 0, @to:@bg1 100%){
@@ -144,11 +150,11 @@
 	.rounded-corners-bottom-left(@b);
 }
 .shadow(@left,@top,@blur,@rgba, @inset:~""){
+	box-shadow:@arguments;		
 	-webkit-box-shadow:@arguments;
 	-moz-box-shadow:@arguments;
 	-ms-box-shadow:@arguments;	
 	-o-box-shadow:@arguments;
-	box-shadow:@arguments;	
 }
 .shadowInset(@left, @top, @blur, @rgba, @inset:inset){
 	.shadow(@left,@top,@blur,@rgba,@inset);
@@ -375,4 +381,29 @@
 		margin:0;
 		padding:0;
 	}
+}
+.fill(){
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+}
+.fill(@top,@left,@pos:absolute){
+	position:@pos;
+	top:@top;
+	left:@left;
+}
+.fill(@top,@left,@bottom,@right,@pos:absolute){
+	.fill(@top,@left,@pos);
+	right:@right;
+	bottom:@bottom;
+}
+.engrave(@color, @intensity:50%, @engraveColor:#000, @depth:1px, @left:0, @blur:0){
+	color:transparent;
+	text-shadow:@left @depth 0 @color, 0 0 @blur fade(@engraveColor, @intensity);
+}
+.emboss(@color,@intensity:50%, @embossColor:#000, @depth:1px, @left:0, @blur:0){
+	color:transparent;
+	text-shadow:0 0 0 @color, @left @depth @blur fade(@embossColor, @intensity);
 }

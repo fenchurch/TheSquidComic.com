@@ -111,9 +111,7 @@ class inkblot extends mgs_core {
 		
 		wp_register_style('style-sheet', get_bloginfo( 'stylesheet_url'));
 		wp_enqueue_style('style-sheet');
-		
-		wp_register_style('style-dynamic', get_bloginfo( 'template_url')."/style.php");
-		wp_enqueue_style('style-dynamic');
+	
 	}
 	
 	/** Add widgetized areas */

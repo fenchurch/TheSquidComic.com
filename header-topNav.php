@@ -3,8 +3,7 @@
 		<header class='head'>
 			<div>
 				<nav class='l'>
-					<ul>
-<?php 
+					<ul><li><a href="/">Home</a></li><?php 
 wp_nav_menu(
 	array(
 		"container"=>false,
@@ -12,14 +11,11 @@ wp_nav_menu(
 		"items_wrap"=>'%3$s'
 	)
 );
-?>
-					</ul>
-				</nav><?php if($comic_nav = comic_nav()):?>
+?></ul>
+				</nav><?php ?>
 				<nav class='r'>
-					<ul>
-<?echo $comic_nav;?>
-					</ul>
-				</nav><?php endif;?>
+					<ul><? if($comic_nav = comic_nav()) echo $comic_nav;?><li class='search'><?php get_search_form();?></li></ul>
+				</nav>
 				<hr>
 			</div>
 		</header>

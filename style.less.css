@@ -1,17 +1,25 @@
+/*Not really using these. just place holders*/
 @sky	:rgba(120,204,255,1);
-@sea0 	:rgba(0,127,216,1);
-@sea1	:rgba(0,16,34,1);
+@sea0 	:#0081db;
+@sea1	:#001022;
 @pink0	:rgba(255,185,204,1);
-@pink1	:rgba(255,45,125,1);
+@pink1	:#ff0082;
 
-@head	:#78CCFF;
-@bgHead	:rgba(0,0,0,.681);
+@fg	:#FFFFFF;
+@fgColor:#333;
+/*Not using these 2*/
 @bg0	:#87c8de;
 @bg1	:#001022;
-@fg	:#FFFFFF;
-@fgColor:#999999;
 
-@graphics_dir:"images/";
+@head	:@pink0;
+@head1	:darken(@pink1,15%);
+@bgHead	:@fg;
+
+
+@border	:1px dashed fade(@fg, 50%);
+@border1:1px dashed fade(@fgColor, 20%);
+
+@graphics_dir:"./images/";
 @wrapW	:1125px;
 @padT	:0;
 @padL	:1em;
@@ -28,6 +36,20 @@
 */
 @import "lib.less";
 
+.engrave(@color, @intensity:60%, @shadow:#000, @depth:1px, @left:1px, @blur:1px){
+	color:transparent;
+	text-shadow:0 0 0 @color,-@left -@depth @blur fade(@shadow, @intensity);
+}
+.engrave2(@color, @intensity:50%, @shadow:#000, @depth:1px, @left:1px, @blur:1px){
+	color:transparent;
+	text-shadow:@left @depth 0 @color,0 0 @blur fade(@shadow, @intensity);
+}
+
+.emboss(@color,@intensity:60%, @shadow:#000, @depth:1px, @left:0px, @blur:0px){
+	color:transparent;	
+	text-shadow:-@left -@depth 0 @color, 0 0 @blur fade(@shadow, @intensity);
+}
+
 /*
  
 Less Style
@@ -39,15 +61,15 @@ Less Style
 	>div{max-width:100%;}
 }
 body{
-	position:relative;
-	background-color:@bg1;
-	&:before, &:after{.bg_repeat;}
-	&:before{
-		.after(-1000,100%,100%,absolute,0);
-		.bg_LinGrad;		
-	}
+	.pos;	
+	.bg(@bg1);
+	.bg_img("bg.png");
+	.bg_repeat(repeat-x);
+	background-size:contain;
 	&:after{
-		.after(-500,100%,100%,absolute,0);
+		.fill;
+		.after(-500);
+		.bg_repeat;
 		.opacity(0.5);
 	}
 	>*{
@@ -56,87 +78,109 @@ body{
 			margin:0 auto;
 		}
 	}
-	>div{
-		//margin-top:1em;
-	}
 }
 .l{	.float;}
 .r{	.float(right);}
+/* going to use hr as a clear*/
+hr{	border:0; line-height:0;height:0;}
 
-hr{
-	border:0;
-}
 a{
 	text-decoration:none;
 	color:@fgColor;
 	&:hover{
-		color: lighten(@fgColor, 10%);
-	//	text-shadow:-1px -1px 1px fade(lighten(@fgColor, 50%), 50%);
+		.emboss(@fgColor);
 	}
+	cursor:pointer;
 }
-//Header
-.body{
-	>div {
-		z-index:1;
-		position:relative;
-	}
-}
+
+/* Header */
 .head{
-	color:@head;
+
+	color:@bgHead;
 	.pad(0 1em);
 	line-height:2em;
-	.bg_LinGrad(bottom , fade(@bgHead,0%) 0em, @bgHead 1px);
+	border-bottom:@border; 
+	border-color:@bgHead;
 	.nolist;
-	a{
+	a,label,input{
 		font-size:.9em;
 		font-weight:800;
-		color:transparent;
-		.insetTextShadow(fade(@head,50%),@bgHead);
 	}
-	a:hover
-	{.insetTextShadow(fade(@head, 80%),@bgHead);
-	}
+	
+	li.bookmark-menu-item>a,
 	li.current-menu-item>a,
-	li.cur>a
-	{.insetTextShadow(fade(@head, 100%),@bgHead,0,0,0,0,1px,0);}
+	li:hover label,
+	li:hover>a
+	{	.engrave(@head);}
+	li>a,
+	li label{		.emboss(@bgHead);}
+	li>.submenu li{
+			>a{	color:@head1; text-shadow:none;}
+			&.cur>a,
+			&:hover>a{
+				.emboss(@head1);
+			}
+	}
 
-	.l{ >ul>li{margin:0 @padL 0 0;}}
-	.r{ >ul>li{margin:0 0 0 @padL;}}
+	.l>ul>li{margin:0 @padL 0 0;}
+	.r>ul>li{margin:0 0 0 @padL;}
 
 	li{
 		.float;
-		position:relative;
-		div{
+		.pos;
+		.display;
+		white-space:nowrap;
+		&.search{
+			div{	.display(inline-block); line-height:1;
+				>div{	display:none;
+					width:120px;
+					>p{
+						margin:0 0 1px .5em;
+						padding:2px 5px;
+						background:@bgHead;
+						.borderRadius(10px);
+						.shadow(0,1px,0,fade(#000,50%));
+					}
+			}
+			}
+			input[type="text"]{
+				background:transparent;
+				width:100%;
+				font-size:75%;
+				font-weight:normal;
+				margin:0;
+				padding:0;
+				border:0 none;				
+				outline:0 none;
+			}
+			input[type="submit"]{
+				display:none;
+			}
+		}
+		&:hover .submenu{.display;}
+		.submenu{
 			@max:250px;
-			z-index:1;
+			.abs(1,100%,@max,auto,50%, 0 0 0 -@max / 2);			
 			.display(none);
-			position:absolute;
-			width:@max;
-			top:100%;
-			left:50%;
 			line-height:1;
 			text-align:center;
-			margin-left:-@max / 2;
 			ul{
 				.display(inline-block);
-				background:#000;			
-				padding:2px 2px;
-
-				a{	display:block;
-					.pad(5px 8px);
-					text-align:left;
-				}
+				.bg(@bgHead);
+				.pad(2px 2px);
+				.shadow(0,5px,10px,fade(#000,50%);
 				li{
-					padding:0;
-					display:block;
-					float:none;
+					.pad;
+					.float(none);
+					&,>a{.display;}
+					>a{
+						.pad(5px 8px);
+						text-align:left;
+					}
 				}
 			}
 		}
-		&:hover div{
-			.display;
-		}
-		
+				
 	}
 }
 .branding{
@@ -161,13 +205,6 @@ a{
 		.pad(0 0 1em 0);
 	}
 }
-.body{
-	position:relative;
-	z-index:0;
-	>div{
-		.shadow(0,20px,40px,rgba(0,0,0,.5));
-	}
-}
 .cols{
 	>*{float:left;}
 	&._4>*{width:25%;}
@@ -178,13 +215,20 @@ a{
 	&._0{display:none;}
 }
 .foot{
-	@border: 1px dashed rgba(255,255,255,.1);
+	@bgC:transparent;
+	@fgC:fade(@fg,50%);
 	margin-top:30px;
 	border-top:@border;
 	font-size:.9em;
-	color:rgba(255,255,255,.5);
+	color:@fgC;
 	.nolist;
-
+	a{
+		color:@fgC;
+		text-shadow:none;
+		&:hover{
+			.emboss(@fg);
+		}
+	}
 
 	.cols{	
 		>li{
@@ -212,27 +256,30 @@ a{
 
 }
 .body{
-	>div{}
-	a{
-		color:darken(@pink1, 30%);
-		&:hover{color:transparent; text-shadow:0px -1px 0 @pink1, 0 0 1px #000 ; }
+	position:relative;
+	z-index:0;
+	>div {
+		position:relative;
+		z-index:1;
+		.shadow(0,2em,4em,rgba(0,0,0,.5));
+		border-top:@border1;
+		&:first-child{
+			border-top:0;
+		}
+		.bg(@fg);
+		>section{ padding:1em;}
 	}
-	section{
-		padding:1em;
-	}
-	.content{
-		font-weight:400;
-	}	
 	.sidebar{
 		margin:1em;
 		max-width:25%;
 		&.l{float:left; margin-right:1em;}
 		&.r{float:right; margin-left:1em;}
 	}
+	
 	.webcomic{
-		padding:0;
-		margin:0;
-		article{
+		.nolist;		
+		&{ .pad; margin:0;}
+		>article{
 			.pos;
 			.clip;
 			overflow:hidden;
@@ -243,78 +290,111 @@ a{
 				.z(-1);
 			}
 			>.cur{ img{.dim(100%,auto);}}
-			>.load{.dim; img{.dim;}}
-		}
-
-
-		.overlay{
-			@w:100px;
-			@h:100px;
-			.arrow(@dir){
-				.bg_img("arrow-@{dir}.png");
-				.bg_repeat;
-				.opacity(.5);
-				&:hover{.opacity(1);}
-			}
-			
-			.abs(@overlayLayer, 0, 100%, 100%);
-			.l,.r{	.abs(1,0,@w,100%);
-				&:hover>div{.display; cursor:pointer;}			
-				>div{
-					.abs(1,0,@w,100%);
-					.display(none);					
-					>div{	.pos(fixed);	
-						.dim(@w,@h);
-					}
+			>.load{.fill; img{.dim;}}
+			>nav{
+				a,a:hover{
+					display:block;
+					position:absolute;
+					top:0;
+					bottom:0;
+					color:transparent;
+					width:100px;
+					font-size:0;
 				}
-
-			}
-			.l{	.left;
-				>div{	>div{.arrow(l);}
-				}
-			}
-			.r{	.right;
-				>div{	.right;
-					>div{.arrow(r);}
-				}
+				.prev{left:0;}
+				.next{right:0;}
 			}
 		}
 	}
-	nav.inline{
-		margin:0 1em;
-		@ext:~".png";
-		.img(@pos,@rollX,@rollY){
-			a,p{	.bg_img(~"@{pos}@{ext}");
-				&:hover{background-position:-@rollX -@rollY}
+	.hentry{
+		@bgC:@fg;
+		@fgC:@fgColor;
+		@fgA:darken(@sea0,0%);
+		@faded:fade(@fgC,20%);
+		@b:1px dashed fade(@fgC, 20%);
+		color:@fgC;
+		overflow-x:hidden;
+		padding-top:1em;		
+		margin-top:1em;
+		border-top:@border1;
+
+		&:first-child{
+			padding-top:0;
+			margin-top:0;
+			border-top:0;
+		}
+		a{
+			color:@fgA;
+			text-shadow:none;
+			&:hover{.emboss(@fgA);}
+		}
+		h1,footer{
+			border:@b;			
+			.display(inline-block);		
+		}
+		h1{
+			border-left:0;
+		}
+		header,footer,.content{
+			border-left:@b;
+		}
+		header{
+			h1{	padding:.5em;
+				a{.emboss(@fgA);}
+			}
+		}
+		.thumbnail{
+			float:left;
+			margin:0 1em;
+			>*{	max-width:150px;
+				padding:2px;
+				border:@b;
+				.bg(@faded);
+			}
+		}
+		.content{
+			padding:1px 1em;
+			p{overflow-x:hidden;}
+		}
+		footer{				
+			&,a{
+				color:fade(@fgC,50%);
+			}
+			font-size:75%;
+			padding:.1em .5em;
+		}
+	}
+	.inline{
+		@p:1em;
+		margin:0 @p;
+		.img(@w, @i, @rollY){
+			&{	@x: -@w * @i;
+				.bg_img("buttons.png");
+				.bg_pos(@x, 0);
+				&.show,
+				&:hover{.bg_pos(@x, -@rollY);}
 			}
 		}
 		.icons(@w,@h,@suffix:~""){
-			.oldest{.img("first@{suffix}",0,@h);}
-			.older{.img("prev@{suffix}",0,@h);}
-			.newer{.img("next@{suffix}",0,@h);}
-			.newest{.img("last@{suffix}",0,@h);}
-			.current{.img("link@{suffix}",0,@h);}		
-			a,p{	.dim(@w,@h);}
+			&.start>a{.img(@w,0,@h);}
+			&.prev>a{.img(@w,1,@h);}
+			&.bookmark>a{.img(@w,2,@h);}
+			&.info{.img(@w,3,@h);}
+			&.next>a{.img(@w,4,@h);}
+			&.end>a{.img(@w,5,@h);}
+			&.zoom.in{.img(@w,6,@h);}
+			&.zoom.out{.img(@w,7,@h);}
+			>a,
+			&.info,
+			&.zoom{.dim(@w,@h); cursor:pointer;}
+			&.info{float:left;}
+			&.zoom{float:right;}
 		}
-		.tooltipImg(@k){
-			>div>div{.display;
-				.bg_repeat;
-				.bg_img("chat_bubbles/@{k}@{ext}");
-			}
-		}
-		.tooltip(@k:a){
-			&._0{.tooltipImg("@{k}0");}
-			&._1{.tooltipImg("@{k}1");}
-			&._2{.tooltipImg("@{k}2");}
-		}
-		.pad(1em 0);
+		.pad(@p 0);
 		&.txt{	.icons(100px,35px);}
-		&.icon{	.icons(50px,43px,"_icon");}
-		a,p{.display;}
-		p{.margin; cursor:pointer;}
+		&.icon>ul>li{.icons(50px,43px,"_icon");}
 		>.l,>.r{.w(auto, 50%);
 			.float;		
-			line-height:0;
 		}
 		>.r{.float(right);}
 		>ul{
@@ -322,42 +402,47 @@ a{
 			.wrap(50%);
 			>li{
 				.pos;		
-				.display(inline-block);
-				.opacity(1);
-				&._a{	.tooltip(a);}
-				&._b{	.tooltip(b);}
-				&._c{	.tooltip(c);}
-
-				&._0{>div{margin-left:-2px;}}
-				&._1{>div{margin-left:-50px;}}
-				&._2{>div{margin-left:-98px;}}
-
-				>a,>p{
+				.float;	
+				&.bookmark{
+					.float(none);
+					.display(inline-block);
+				}
+				>a{
+					.display;
 					.maxW;
 					.bg_repeat;
+					&,&:hover{color:transparent;text-shadow:none;}
 				}
-				&:hover{
-					.opacity;
-					>div{.display;.opacity;}
-				}
-				>div{
-					@w:100px;
-					@h:100px;
-					@txt:30px;
-					.abs(@fxLayer, -@h, @w, @h, 50%, 0);
-					.opacity(0);
-					line-height:1;
+				&.info{
+					.pos;
+					p{margin:0;}
+					&.show>div{display:block;}						
 					>div{
-						.abs(0,0,@w,@h);
-					}
-					>span{
-						.pos;
-						.dim(@w, @h - @txt);
-						.middle;
+						@borderW:5px;
+						@w:500px;
+						display:none;
+						.abs(@fxLayer, initial, @w, auto, 50%); 
+						margin-left:-1 * @w / 2;
+						bottom:100%;
+						margin-bottom:@p;
+						>article{
+							display:inline-block;
+							text-align:left;
+							width:auto;
+							margin:0 auto;
+							padding:@p;
+							.bg(@fg);
+							border:@borderW solid @fgColor;
+							&:after{
+								.after;
+								.abs(0, 100%, 0, 0, 50%, 0 0 0 -@p);
+								border:@p solid transparent;
+								border-top-color:@fgColor;
+							}
+						}
 					}
 				}
 			}
 		}
 	}
 }
-
