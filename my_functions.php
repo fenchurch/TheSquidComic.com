@@ -24,6 +24,14 @@ function my_init(){
 	// add both of these actions, otherwise add only the appropriate one
 	add_action( 'wp_ajax_nopriv_ajax-nav', 'ajax_nav' );
 	add_action( 'wp_ajax_ajax-nav', 'ajax_nav' );
+	
+	//Add social fields to the User Profile
+	add_action( 'show_user_profile', 'social_profile_fields' );
+	add_action( 'edit_user_profile', 'social_profile_fields' );
+
+	add_action( 'personal_options_update', 'save_social_profile_fields' );
+	add_action( 'edit_user_profile_update', 'save_social_profile_fields' );
+
 }
 
 function favicon(){
@@ -365,9 +373,10 @@ function __list(
 	return	$beforeLabel.
 		sprintf($itemWrap, __link($root), $rootLabel).
 		$afterLabel.
+		(count($items)?
 		$beforeGroup.
 		sprintf($groupWrap, implode("", $items)).
-		$afterGroup;
+		$afterGroup:"");
 }
 function __log(){
 	$r = array();
@@ -376,4 +385,37 @@ function __log(){
 	printf("\n<script>if(console) console.log(%s)</script>\n", implode(",", $r));
 }
 my_init();
+
+
+
+function social_profile_fields( $user ) { 
+?>
+	<h3>Social Profiles</h3>
+	<table class="form-table">
+<?php 	foreach(array(
+		"twitter", 
+		"facebook", 
+		"tumblr"
+	) as $p){?>
+		<tr>
+			<th><label for="<?php echo $p;?>"><?php echo ucwords($p);?></label></th>
+			<td>
+				<input type="text" name="<?php echo $p;?>" id="<?php echo $p;?>" value="<?php echo esc_attr( get_the_author_meta( $p, $user->ID ) ); ?>" class="regular-text" /><br />
+				<span class="description"><?php 
+					if($p == "twitter") echo "Please enter your Twitter username.";
+					else echo "Please enter your ".ucwords($p)." url";
+				?></span>
+			</td>
+		</tr>
+<?php 	}?>
+	</table>
+<?php }
+
+function save_social_profile_fields( $user_id ) {
+	if ( !current_user_can( 'edit_user', $user_id ) )
+		return false;
+	foreach(array("twitter", "facebook", "tumblr") as $v)
+		update_usermeta( $user_id, $v, $_POST[$v] );
+}
+
 ?>

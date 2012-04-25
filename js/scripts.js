@@ -1,7 +1,7 @@
-(function($){
 if(!console){
 	console = {log:function(){return;}}
 }
+(function($){
 var plugin = "pageLoader",
 //Plugin Vars
 $$,o,data,relData,loadingData,preloaded,
@@ -304,7 +304,8 @@ $[plugin] = function(options){
 })(jQuery);
 (function($){
 	$.toggleSize = function(e){
-		if(! $(e.srcElement).is($(e.currentTarget))) return;
+		console.log(e);
+		if(! $(e.target).is($(e.currentTarget))) return;
 		e.preventDefault();
 		
 		var $wc = $("#webcomic");

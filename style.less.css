@@ -267,7 +267,8 @@ a{
 			border-top:0;
 		}
 		.bg(@fg);
-		>section{ padding:1em;}
+		>section,
+		>nav{ padding:1em;}
 	}
 	.sidebar{
 		margin:1em;
@@ -314,54 +315,82 @@ a{
 		@b:1px dashed fade(@fgC, 20%);
 		color:@fgC;
 		overflow-x:hidden;
-		padding-top:1em;		
-		margin-top:1em;
-		border-top:@border1;
-
-		&:first-child{
-			padding-top:0;
-			margin-top:0;
-			border-top:0;
+		padding-bottom:1em;		
+		margin-bottom:1em;
+		border-bottom:@border1;
+		.nolist;
+		&:last-child{
+			padding-bottom:0;
+			margin-bottom:0;
+			border-bottom:0;
+		}
+		p:last-child{
+			margin:0;
+			padding-bottom:1.5em;
 		}
 		a{
 			color:@fgA;
 			text-shadow:none;
 			&:hover{.emboss(@fgA);}
 		}
-		h1,footer{
-			border:@b;			
-			.display(inline-block);		
-		}
-		h1{
-			border-left:0;
-		}
-		header,footer,.content{
-			border-left:@b;
-		}
 		header{
-			h1{	padding:.5em;
+			>*{	padding-left:1em;
+			}
+			h1{	padding:.2em .5em;
 				a{.emboss(@fgA);}
 			}
 		}
+		header h1,
+		footer>div{
+			border:@b;
+			.display(inline-block);
+		}
+		.thumbnail,.thumbnails{
+			>div{.float;}
+		}
 		.thumbnail{
-			float:left;
-			margin:0 1em;
-			>*{	max-width:150px;
-				padding:2px;
+			.float;
+			max-width:66%;
+			>div{
+				margin:0 1em 1em;			
+				padding:.2em;
 				border:@b;
-				.bg(@faded);
+				line-height:0;
+				img{
+					min-width:50%;
+					width:100%;
+					height:auto;
+				}
+			}
+		}
+		.thumbnails{
+			overflow-x:hidden;
+			max-width:100%;
+			border:@b;
+			li{
+				width:25%;
+				div{
+					margin:0;
+					padding:.2em;
+				}				
+			}
+			a,img,li,div{
+				float:left;
+				line-height:0;
+			}
+			img{
+				width:100%;
 			}
 		}
 		.content{
-			padding:1px 1em;
+			padding:0 0 0 1em;
 			p{overflow-x:hidden;}
 		}
 		footer{				
-			&,a{
-				color:fade(@fgC,50%);
-			}
+			&,a{	color:fade(@fgC,50%);}
+			div{padding:.1em .5em;}
 			font-size:75%;
-			padding:.1em .5em;
+			.pad(0 0 0 1em);
 		}
 	}
 	.inline{
