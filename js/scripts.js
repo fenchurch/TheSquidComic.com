@@ -39,7 +39,7 @@ methods = {
 //Private Methods
 _m = {
 	options	:function(options){
-		return o = $.extend(true, {
+		o = $.extend(true, {
 			url:"",
 			ajax:{
 				action:"ajax-nav",
@@ -54,6 +54,7 @@ _m = {
 			load:"load",
 			controls:".overlay"
 		}, options);
+		return o;
 	},
 	preload:function(d, id){
 		var r;

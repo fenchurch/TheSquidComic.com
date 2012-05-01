@@ -19,9 +19,7 @@ global $webcomic, $inkblot, $q, $post;
 ?>
 <!--Index.php-->
 <?php
-get_header();
-get_header("topNav");
-get_header("branding");
+get_header("all");
 ?>
 <div id='main' class='body'>
 	<div>
@@ -90,7 +88,7 @@ if( is_home() ){
 	print("<!--is archive-->");	
 	global $wp_query, $post, $posts;
 	$q = get_queried_object();
-	get_template_part('tax', $q->taxonomy);
+	get_template_part('tax2', $q->taxonomy);
 }else{
 	get_template_part('loop');
 	__log($wp_query);

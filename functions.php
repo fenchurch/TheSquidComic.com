@@ -159,6 +159,7 @@ class inkblot extends mgs_core {
 				$r = implode( ' ', array_slice( explode( ' ', trim( htmlentities( strip_tags( $o->description ) ) ) ), 0, apply_filters( 'excerpt_length', 55 ) ) );
 			} else
 				$r = get_option( 'blogdescription' );
+			$r = trim(htmlentities(strip_tags($r)));
 		} elseif ( 'copyright' == $s ) {
 			$c = current( $wpdb->get_results( "SELECT YEAR( min( post_date ) ) AS start, YEAR( max( post_date ) ) AS end FROM $wpdb->posts WHERE post_status = 'publish'" ) );
 			$r = ( $c->start == $c->end ) ? "&copy; $c->end" : "&copy; $c->start &ndash; $c->end";

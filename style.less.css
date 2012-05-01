@@ -262,13 +262,29 @@ a{
 		position:relative;
 		z-index:1;
 		.shadow(0,2em,4em,rgba(0,0,0,.5));
-		border-top:@border1;
 		&:first-child{
 			border-top:0;
 		}
 		.bg(@fg);
-		>section,
-		>nav{ padding:1em;}
+		
+		>section{
+			padding:1em;
+			border-bottom:@border1;
+		}
+		>nav{ 	margin:.5em;
+			padding:.5em 0;
+			&.paginated{
+				text-align:center;
+				border:@border1;
+				border-left-width:0;
+				border-right-width:0;
+				&.above{border-top:0;}
+				&.below{border-bottom:0;}
+				.prev{float:left;}
+				.next{float:right;}
+			}
+
+		}
 	}
 	.sidebar{
 		margin:1em;
@@ -313,12 +329,22 @@ a{
 		@fgA:darken(@sea0,0%);
 		@faded:fade(@fgC,20%);
 		@b:1px dashed fade(@fgC, 20%);
+		@cellPad:2px;
+
 		color:@fgC;
 		overflow-x:hidden;
 		padding-bottom:1em;		
 		margin-bottom:1em;
 		border-bottom:@border1;
 		.nolist;
+		.alignright{
+			float:right;
+			margin-left:1em;
+		}
+		.alignleft{
+			float:left;
+			margin-right:1em;	
+		}
 		&:last-child{
 			padding-bottom:0;
 			margin-bottom:0;
@@ -345,15 +371,12 @@ a{
 			border:@b;
 			.display(inline-block);
 		}
-		.thumbnail,.thumbnails{
-			>div{.float;}
-		}
 		.thumbnail{
 			.float;
 			max-width:66%;
 			>div{
-				margin:0 1em 1em;			
-				padding:.2em;
+				margin:0 0 1em 1em;
+				padding:@cellPad;
 				border:@b;
 				line-height:0;
 				img{
@@ -364,27 +387,35 @@ a{
 			}
 		}
 		.thumbnails{
-			overflow-x:hidden;
-			max-width:100%;
-			border:@b;
+			ul{
+				margin-top:-@cellPad;
+				
+				overflow-x:hidden;		
+			}
 			li{
+				.float;
 				width:25%;
 				div{
-					margin:0;
-					padding:.2em;
+					margin:@cellPad;
 				}				
 			}
-			a,img,li,div{
-				float:left;
+			a,div,img{
+				.float;
 				line-height:0;
+			}
+			a{
+				border:@b;
+				padding:@cellPad;
+				
 			}
 			img{
 				width:100%;
+				height:auto;
 			}
 		}
 		.content{
 			padding:0 0 0 1em;
-			p{overflow-x:hidden;}
+			overflow-x:hidden;
 		}
 		footer{				
 			&,a{	color:fade(@fgC,50%);}
@@ -429,6 +460,7 @@ a{
 		>ul{
 			text-align:center;
 			.wrap(50%);
+			line-height:0;
 			>li{
 				.pos;		
 				.float;	
@@ -443,6 +475,7 @@ a{
 					&,&:hover{color:transparent;text-shadow:none;}
 				}
 				&.info{
+					line-height:1;
 					.pos;
 					p{margin:0;}
 					&.show>div{display:block;}						
@@ -457,8 +490,6 @@ a{
 						>article{
 							display:inline-block;
 							text-align:left;
-							width:auto;
-							margin:0 auto;
 							padding:@p;
 							.bg(@fg);
 							border:@borderW solid @fgColor;

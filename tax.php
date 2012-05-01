@@ -77,7 +77,7 @@ if ( have_posts() ) :
 	endwhile;
 	if($thumbs):?>
 			</ul>
-<?php 	endif;?>
+<?php 	endif;__log($wp_query);?>
 		</div>
 	</article>
 </section>
